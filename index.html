@@ -537,7 +537,7 @@
     <div class="sec-head"><span class="num">✦</span><h2>Plan Your Own Trip</h2><div class="rule"></div></div>
     <div class="calc">
       <h3>Estimate this trip for your family</h3>
-      <p class="lead">Pick your party size and tap Calculate for a ballpark cost of a similar 10-night Rockies road trip. Flights &amp; tours use our actual paid prices; lodging, vehicle, food &amp; fuel are researched mid-July ranges — each line is tagged.</p>
+      <p class="lead">Pick your party size and tap Calculate for a ballpark cost of a similar 10-night Rockies road trip. Flights &amp; tours use our actual paid prices; lodging, vehicle &amp; the glacier/gondola are researched ranges — each line is tagged.</p>
       <div class="calc-controls">
         <div class="calc-field">
           <label>Adults</label>
@@ -566,7 +566,7 @@
         <div class="calc-total"><span class="lbl">Estimated total (USD)</span><span id="calc-total">$0</span></div>
         <span class="calc-conf" id="calc-conf">Estimated</span>
         <div class="calc-break" id="calc-break"></div>
-        <div class="calc-note"><b>How to read this:</b> <span class="cb-tag known" style="margin:0 2px;">Known</span> lines use our actual 2026 paid prices. <span class="cb-tag est" style="margin:0 2px;">Est</span> lines are researched mid-July 2026 ranges — lodging is per-room (peak-July rates), so smaller parties don't drop as much as you'd expect. Booked-only basis (excludes food, fuel, contingency, park passes &amp; airfare changes).</div>
+        <div class="calc-note"><b>How to read this:</b> <span class="cb-tag known" style="margin:0 2px;">Known</span> lines use our actual 2026 paid prices. <span class="cb-tag est" style="margin:0 2px;">Est</span> lines are researched mid-July 2026 ranges — lodging is per-room (peak-July rates), so smaller parties don't drop as much as you'd expect. Includes flights, lodging, vehicle, the 2 lake tours, and the glacier + gondola. Excludes food, fuel, contingency, park passes &amp; airfare changes.</div>
       </div>
     </div>
   </section>
@@ -748,7 +748,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.c
   const aSel=document.getElementById('calc-adults'), kSel=document.getElementById('calc-kids'),
         result=document.getElementById('calc-result');
   // KNOWN per-person (from actual 2026 bookings)
-  const FLIGHT_PP=588, TOUR_PP=134;
+  const FLIGHT_PP=588, TOUR_PP=134, RIDES_PP=95;
   // Anchored placeholders
   const ROOM_NIGHT=337, NIGHTS=10;             // per-room/night, peak-July (your real blended rate)
   function vehicleDay(party){ if(party<=2) return 70; if(party<=4) return 110; return 187; }
@@ -761,12 +761,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.c
     const lodging=rooms*ROOM_NIGHT*NIGHTS;
     const vehicle=vehicleDay(party)*NIGHTS;
     const tours=TOUR_PP*party;
-    const total=flights+lodging+vehicle+tours;
+    const rides=RIDES_PP*party;
+    const total=flights+lodging+vehicle+tours+rides;
     const rows=[
       ['Flights (round-trip)',flights,'known'],
       ['Lodging · '+rooms+' room'+(rooms>1?'s':'')+' × '+NIGHTS+' nts',lodging,'est'],
       ['Rental vehicle × '+NIGHTS+' days',vehicle,'est'],
       ['Tours (Moraine + Maligne)',tours,'known'],
+      ['Glacier ride + Banff Gondola',rides,'est'],
     ];
     document.getElementById('calc-total').textContent=money(total);
     document.getElementById('calc-break').innerHTML=rows.map(r=>
@@ -774,7 +776,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.c
     ).join('');
     const knownShare=(flights+tours)/total;
     const conf=Math.round(60+knownShare*35);
-    document.getElementById('calc-conf').textContent='Estimated · ~'+conf+'% confidence · booked-only basis';
+    document.getElementById('calc-conf').textContent='Estimated · ~'+conf+'% confidence';
     result.style.display='block';
   }
   go.addEventListener('click',calc);
